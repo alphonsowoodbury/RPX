@@ -12,14 +12,27 @@ concurrency:
 
 jobs:
   deploy:
-    # Skips cleanly until the CLOUDFLARE_API_TOKEN secret exists.
-    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Skips cleanly (green) until the CLOUDFLARE_API_TOKEN secret exists,
+      # so the repo never shows a failed run before credentials are configured.
+      - name: Check credentials
+        id: creds
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -n "$TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::CLOUDFLARE_API_TOKEN not set yet — skipping deploy."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish to Cloudflare Pages
+        if: steps.creds.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
