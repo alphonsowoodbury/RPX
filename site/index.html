@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rees Performance — F1 Race Companion</title>
+<meta name="description" content="Your Formula 1 race companion — session times in your timezone, the circuit, the stakes, and the standings. By Alphonso Woodbury." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.jolpi.ca" crossorigin>
+<link rel="stylesheet" href="/assets/style.css" />
+<style>
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:1.25rem; margin-top:2rem; }
+  .cd{ display:flex; gap:1.5rem; margin-top:1.75rem; font-family:var(--mono); }
+  .cd .u{ text-align:left; }
+  .cd .u b{ display:block; font-size:clamp(1.8rem,6vw,3rem); font-weight:700; line-height:1; color:var(--text); letter-spacing:-.02em; }
+  .cd .u span{ font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); }
+  .cdwrap .lab{ font-family:var(--mono); font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+  tr.next td{ color:var(--text); }
+  tr.next td:first-child::before{ content:"▸ "; color:var(--text); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/"><span class="tick"></span> Rees&nbsp;Performance</a>
+    <div class="nav-links">
+      <a href="/">Race</a>
+      <a href="/standings.html">Standings</a>
+      <a href="/tracks/">Tracks</a>
+      <a href="/insights/">Insights</a>
+      <a href="/about.html">About</a>
+      <a class="cta" href="https://alphonsowoodbury.com">alphonsowoodbury.com ↗</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap" style="padding-block:clamp(3rem,9vw,6rem) clamp(2rem,5vw,3rem)">
+  <p class="eyebrow" id="round">Loading race…</p>
+  <h1 style="font-size:clamp(2.2rem,7vw,4.6rem)"><span id="raceName">—</span></h1>
+  <p class="lede" id="raceLoc" style="margin-top:1rem"></p>
+  <div class="cdwrap">
+    <div class="lab" id="cdLabel">&nbsp;</div>
+    <div class="cd" id="cd"></div>
+  </div>
+</header>
+
+<section class="section" id="sec-sessions">
+  <div class="wrap">
+    <p class="eyebrow">Sessions · your local time</p>
+    <h2>The weekend.</h2>
+    <div class="table-scroll" style="margin-top:1.5rem">
+      <table>
+        <thead><tr><th>Session</th><th>Day</th><th>Your time</th></tr></thead>
+        <tbody id="sessions"><tr><td colspan="3">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="note" id="tzNote"></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="hub-grid">
+      <div class="card">
+        <span class="tag">The circuit</span>
+        <h3 id="circuitName">—</h3>
+        <p id="circuitStat" class="cmeta"></p>
+        <p id="circuitNote"></p>
+        <a id="circuit3d" class="btn" style="display:none;margin-top:.5rem" href="#">Explore in 3D →</a>
+      </div>
+      <div class="card">
+        <span class="tag">Drivers' championship</span>
+        <table style="margin-top:.5rem"><tbody id="drivers"><tr><td>Loading…</td></tr></tbody></table>
+        <a class="status" href="/standings.html" style="margin-top:.5rem">Full standings →</a>
+      </div>
+      <div class="card">
+        <span class="tag">Constructors'</span>
+        <table style="margin-top:.5rem"><tbody id="constructors"><tr><td>Loading…</td></tr></tbody></table>
+        <a class="status" href="/standings.html" style="margin-top:.5rem">Full standings →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="sec-last">
+  <div class="wrap">
+    <p class="eyebrow">Last time out</p>
+    <h2 id="lastRaceName">—</h2>
+    <div class="table-scroll" style="margin-top:1.5rem">
+      <table>
+        <thead><tr><th class="rank">Pos</th><th>Driver</th><th>Constructor</th><th class="num">Pts</th></tr></thead>
+        <tbody id="lastResults"><tr><td colspan="4">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="col">
+      <div class="wordmark"><span class="tick"></span> Rees&nbsp;Performance</div>
+      <p class="fine" style="margin-top:1rem">An F1 race companion by Alphonso Woodbury. Data updates after each session.</p>
+    </div>
+    <div class="col">
+      <h4>The site</h4>
+      <a href="/standings.html">Standings</a>
+      <a href="/tracks/">Track Explorer</a>
+      <a href="/insights/">Insights</a>
+      <a href="/about.html">About &amp; how it's built</a>
+    </div>
+    <div class="col">
+      <h4>Elsewhere</h4>
+      <a href="https://alphonsowoodbury.com">Portfolio ↗</a>
+      <a href="mailto:alphonso@meristem.studio">Email ↗</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API = "https://api.jolpi.ca/ergast/f1";
+const $ = id => document.getElementById(id);
+const j = u => fetch(u).then(r => r.json());
+
+const SESSION_NAMES = {
+  FirstPractice:"Practice 1", SecondPractice:"Practice 2", ThirdPractice:"Practice 3",
+  SprintQualifying:"Sprint Quali", Sprint:"Sprint", Qualifying:"Qualifying",
+};
+const dtOf = s => (s && s.date) ? new Date(`${s.date}T${s.time || "00:00:00Z"}`) : null;
+const fmtDay  = d => d.toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"});
+const fmtTime = d => d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+
+let countdownTarget = null, countdownTimer = null;
+
+async function loadRace(){
+  const data = await j(`${API}/current/next.json`);
+  const races = data.MRData.RaceTable.Races;
+  if(!races.length){ $("round").textContent = "Season complete — see you next year"; return; }
+  const r = races[0];
+
+  $("round").textContent = `Round ${r.round} · ${r.season} season`;
+  $("raceName").textContent = r.raceName;
+  $("raceLoc").textContent = `${r.Circuit.circuitName} · ${r.Circuit.Location.locality}, ${r.Circuit.Location.country}`;
+
+  // assemble sessions (incl. the race itself), sorted chronologically
+  const list = [];
+  for(const k of Object.keys(SESSION_NAMES)) if(r[k]) list.push({name:SESSION_NAMES[k], dt:dtOf(r[k])});
+  list.push({name:"Race", dt:dtOf({date:r.date, time:r.time})});
+  list.sort((a,b)=> a.dt - b.dt);
+
+  const now = new Date();
+  const next = list.find(s => s.dt > now);
+  const tb = $("sessions"); tb.innerHTML = "";
+  for(const s of list){
+    const tr = document.createElement("tr");
+    if(next && s.name===next.name && +s.dt===+next.dt) tr.className = "next";
+    tr.innerHTML = `<td>${s.name}</td><td>${fmtDay(s.dt)}</td><td>${fmtTime(s.dt)}</td>`;
+    tb.appendChild(tr);
+  }
+  $("tzNote").textContent = `Times shown in your timezone (${Intl.DateTimeFormat().resolvedOptions().timeZone}). Updated after each session.`;
+
+  // countdown to next session (or to the race)
+  const target = next ? next.dt : list[list.length-1].dt;
+  $("cdLabel").textContent = next ? `Next: ${next.name}` : "Race weekend complete";
+  startCountdown(target);
+
+  loadCircuit(r.Circuit.circuitId);
+}
+
+function startCountdown(target){
+  countdownTarget = target;
+  if(countdownTimer) clearInterval(countdownTimer);
+  const tick = () => {
+    const ms = countdownTarget - new Date();
+    const cd = $("cd");
+    if(ms <= 0){ cd.innerHTML = `<div class="u"><b>LIVE</b><span>now</span></div>`; clearInterval(countdownTimer); return; }
+    const s = Math.floor(ms/1000);
+    const d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60), sec = s%60;
+    cd.innerHTML =
+      `<div class="u"><b>${d}</b><span>days</span></div>`+
+      `<div class="u"><b>${String(h).padStart(2,"0")}</b><span>hrs</span></div>`+
+      `<div class="u"><b>${String(m).padStart(2,"0")}</b><span>min</span></div>`+
+      `<div class="u"><b>${String(sec).padStart(2,"0")}</b><span>sec</span></div>`;
+  };
+  tick(); countdownTimer = setInterval(tick, 1000);
+}
+
+async function loadCircuit(circuitId){
+  try{
+    const stats = await j("/data/circuit_stats.json");
+    const c = stats[circuitId];
+    if(!c) return;
+    $("circuitName").textContent = c.name;
+    const pct = c.poleWinRate!=null ? `${(c.poleWinRate*100).toFixed(1)}%` : "—";
+    $("circuitStat").innerHTML = `<b>${pct}</b> of races here won from pole · ${c.races} GPs since ${c.firstSeason}`;
+    $("circuitNote").textContent = c.poleWinRate==null ? ""
+      : c.poleWinRate >= 0.55 ? "Track position is king here — qualifying is decisive."
+      : c.poleWinRate <= 0.42 ? "An overtaking track — Sunday is genuinely up for grabs."
+      : "Balanced — pole helps, but the race is live.";
+    if(c.track3d){
+      const a = $("circuit3d");
+      a.href = `/tracks/?c=${c.track3d}`; a.style.display = "inline-flex";
+    }
+  }catch(e){ /* stats optional */ }
+}
+
+async function loadStandings(){
+  try{
+    const dd = await j(`${API}/current/driverStandings.json`);
+    const ds = dd.MRData.StandingsTable.StandingsLists[0]?.DriverStandings || [];
+    $("drivers").innerHTML = ds.slice(0,5).map(s =>
+      `<tr><td class="rank">${s.position}</td><td>${s.Driver.givenName[0]}. ${s.Driver.familyName}</td><td class="num">${s.points}</td></tr>`
+    ).join("") || `<tr><td>—</td></tr>`;
+  }catch(e){ $("drivers").innerHTML = `<tr><td>Unavailable</td></tr>`; }
+  try{
+    const cc = await j(`${API}/current/constructorStandings.json`);
+    const cs = cc.MRData.StandingsTable.StandingsLists[0]?.ConstructorStandings || [];
+    $("constructors").innerHTML = cs.slice(0,5).map(s =>
+      `<tr><td class="rank">${s.position}</td><td>${s.Constructor.name}</td><td class="num">${s.points}</td></tr>`
+    ).join("") || `<tr><td>—</td></tr>`;
+  }catch(e){ $("constructors").innerHTML = `<tr><td>Unavailable</td></tr>`; }
+}
+
+async function loadLast(){
+  try{
+    const data = await j(`${API}/current/last/results.json`);
+    const r = data.MRData.RaceTable.Races[0];
+    if(!r){ $("lastRaceName").textContent = "—"; return; }
+    $("lastRaceName").textContent = r.raceName;
+    $("lastResults").innerHTML = r.Results.slice(0,10).map(x =>
+      `<tr><td class="rank">${x.positionText}</td><td>${x.Driver.givenName} ${x.Driver.familyName}</td><td>${x.Constructor.name}</td><td class="num">${x.points}</td></tr>`
+    ).join("");
+  }catch(e){ $("lastResults").innerHTML = `<tr><td colspan="4">Unavailable</td></tr>`; }
+}
+
+loadRace(); loadStandings(); loadLast();
+</script>
+</body>
+</html>

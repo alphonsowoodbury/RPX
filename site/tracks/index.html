@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Track Explorer — Rees Performance</title>
+<meta name="description" content="Real F1 circuits, rendered in 3D from open geometry data. A Rees Performance prototype." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/assets/style.css" />
+<style>
+  html,body{ height:100%; overflow:hidden; background:var(--bg); }
+  #c{ position:fixed; inset:0; display:block; }
+  .hud{ position:fixed; pointer-events:none; z-index:10; }
+  .hud.tl{ top:1.25rem; left:1.5rem; }
+  .hud.bl{ bottom:1.5rem; left:1.5rem; }
+  .hud.tr{ top:1.25rem; right:1.5rem; text-align:right; }
+  .hud.br{ bottom:1.5rem; right:1.5rem; text-align:right; }
+  .hud .wordmark{ font-family:var(--mono); font-weight:700; font-size:.78rem; letter-spacing:.22em; text-transform:uppercase; display:flex; align-items:center; gap:.55rem; }
+  .hud .wordmark .tick{ width:8px; height:8px; background:var(--text); display:inline-block; }
+  .hud .label{ font-family:var(--mono); font-size:.66rem; letter-spacing:.22em; text-transform:uppercase; color:var(--dim); margin-top:.5rem; }
+  .hud .cname{ font-family:var(--display); font-weight:700; font-size:clamp(1.4rem,4vw,2.4rem); letter-spacing:-.02em; line-height:1.05; }
+  .hud .cmeta{ font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--muted); margin-top:.5rem; line-height:1.7; }
+  .hud .cmeta b{ color:var(--text); font-weight:500; }
+  .hint{ font-family:var(--mono); font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
+  .switch{ pointer-events:auto; display:flex; flex-direction:column; gap:.4rem; align-items:flex-end; }
+  .switch button{ font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); background:transparent; border:1px solid var(--line); padding:.45rem .8rem; cursor:pointer; transition:all .15s; }
+  .switch button:hover{ color:var(--text); border-color:var(--faint); }
+  .switch button.active{ background:var(--text); color:var(--bg); border-color:var(--text); }
+  .topnav{ pointer-events:auto; }
+  .topnav a{ font-family:var(--mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .topnav a:hover{ color:var(--text); }
+  @media (max-width:640px){ .hud.bl{ bottom:1rem; left:1rem; } .hud.br{ bottom:1rem; right:1rem; } .switch{ flex-direction:row; flex-wrap:wrap; max-width:60vw; } }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="hud tl">
+  <a class="wordmark" href="/" style="pointer-events:auto;color:var(--text)"><span class="tick"></span> Rees&nbsp;Performance</a>
+  <div class="label">Track Explorer · Prototype</div>
+</div>
+
+<div class="hud tr topnav">
+  <a href="/about.html">← How it's built</a>
+</div>
+
+<div class="hud bl">
+  <div class="label" id="loc">—</div>
+  <div class="cname" id="name">Loading…</div>
+  <div class="cmeta" id="meta"></div>
+</div>
+
+<div class="hud br">
+  <div class="switch" id="switch"></div>
+  <div class="hint" style="margin-top:.7rem">Drag to orbit · scroll to zoom</div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const BG = 0x0a0a0b;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(BG);
+
+const camera = new THREE.PerspectiveCamera(50, 1, 1, 60000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.maxPolarAngle = Math.PI * 0.49;   // stay above the ground plane
+controls.autoRotate = !reduceMotion;
+controls.autoRotateSpeed = 0.45;
+
+let trackGroup = null;
+
+function disposeGroup(g){
+  g.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); });
+  scene.remove(g);
+}
+
+function buildTrack(data){
+  if (trackGroup) disposeGroup(trackGroup);
+  const g = new THREE.Group();
+  const pts = data.points, n = pts.length, closed = data.closed;
+  const halfW = 7.5;                  // ~15 m road
+  const P = i => pts[((i % n) + n) % n];
+
+  // road ribbon (triangle strip from offset edges) + collect edge/center lines
+  const pos = [];
+  const left = [], right = [], center = [];
+  for (let i = 0; i < n; i++){
+    const prev = P(i-1), cur = pts[i], next = P(i+1);
+    let tx = next[0]-prev[0], tz = next[1]-prev[1];
+    const tl = Math.hypot(tx,tz) || 1; tx/=tl; tz/=tl;
+    const nx = -tz, nz = tx;          // perpendicular in XZ plane
+    const lx = cur[0]+nx*halfW, lz = cur[1]+nz*halfW;
+    const rx = cur[0]-nx*halfW, rz = cur[1]-nz*halfW;
+    pos.push(lx,0,lz, rx,0,rz);
+    left.push(new THREE.Vector3(lx,0.05,lz));
+    right.push(new THREE.Vector3(rx,0.05,rz));
+    center.push(new THREE.Vector3(cur[0],0.6,cur[1]));
+  }
+  const idx = [];
+  const segs = closed ? n : n-1;
+  for (let i=0;i<segs;i++){
+    const a=2*i, b=a+1, c=2*((i+1)%n), d=c+1;
+    idx.push(a,b,c, b,d,c);
+  }
+  const road = new THREE.BufferGeometry();
+  road.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+  road.setIndex(idx);
+  g.add(new THREE.Mesh(road, new THREE.MeshBasicMaterial({ color:0x1c1c20, side:THREE.DoubleSide })));
+
+  // edges (gray) + racing-line center (white)
+  const edgeMat = new THREE.LineBasicMaterial({ color:0x4a4a52 });
+  const ctrMat  = new THREE.LineBasicMaterial({ color:0xfafafa });
+  const mkLine = (arr,mat) => new (closed?THREE.LineLoop:THREE.Line)(new THREE.BufferGeometry().setFromPoints(arr), mat);
+  g.add(mkLine(left,edgeMat), mkLine(right,edgeMat), mkLine(center,ctrMat));
+
+  // start/finish bar at point 0
+  const cur=P(0), nx0=-(P(1)[1]-P(-1)[1]), nz0=(P(1)[0]-P(-1)[0]);
+  const na=Math.hypot(nx0,nz0)||1;
+  const bar=new THREE.Mesh(new THREE.BoxGeometry(halfW*2+3,1.4,3.2),
+                           new THREE.MeshBasicMaterial({color:0xffffff}));
+  bar.position.set(cur[0],0.8,cur[1]);
+  bar.rotation.y = Math.atan2(-nz0/na, nx0/na);
+  g.add(bar);
+
+  scene.add(g);
+  trackGroup = g;
+
+  // frame the camera + ground grid to this circuit
+  const md = data.bounds.maxDim;
+  scene.fog = new THREE.Fog(BG, md*0.7, md*3.2);
+  const grid = new THREE.GridHelper(Math.ceil(md*2.4/200)*200, 24, 0x26262b, 0x1a1a1e);
+  grid.position.y = -0.5;
+  g.add(grid);                       // part of the group → disposed on reload
+
+  controls.target.set(0,0,0);
+  camera.position.set(md*0.15, md*0.85, md*1.0);
+  controls.minDistance = md*0.35;
+  controls.maxDistance = md*2.6;
+  controls.update();
+
+  // HUD
+  document.getElementById('loc').textContent  = data.location || '';
+  document.getElementById('name').textContent = data.name || data.id;
+  document.getElementById('meta').innerHTML =
+    `<b>${(data.length_m/1000).toFixed(3)} km</b> · first GP <b>${data.firstgp||'—'}</b> · `+
+    `<b>${n}</b> points · real geometry`;
+}
+
+async function loadCircuit(id){
+  const data = await fetch(`data/${id}.json`).then(r=>r.json());
+  buildTrack(data);
+  document.querySelectorAll('#switch button').forEach(b =>
+    b.classList.toggle('active', b.dataset.id===id));
+  history.replaceState(null,'',`?c=${id}`);
+}
+
+async function init(){
+  const list = await fetch('data/index.json').then(r=>r.json());
+  const sw = document.getElementById('switch');
+  list.forEach(c=>{
+    const b=document.createElement('button');
+    b.textContent=c.id; b.dataset.id=c.id;
+    b.onclick=()=>loadCircuit(c.id);
+    sw.appendChild(b);
+  });
+  const want = new URLSearchParams(location.search).get('c');
+  await loadCircuit(list.some(c=>c.id===want) ? want : 'silverstone');
+  resize();
+  animate();
+}
+
+function resize(){
+  const w=innerWidth, h=innerHeight;
+  renderer.setSize(w,h);             // let three set canvas display size (fixes DPR/offset)
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene,camera);
+}
+
+init();
+</script>
+</body>
+</html>

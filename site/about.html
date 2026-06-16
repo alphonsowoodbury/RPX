@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About — Rees Performance</title>
+<meta name="description" content="A Formula 1 race companion by Alphonso Woodbury — and the architecture behind it, from a seventy-year archive to live session data." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/"><span class="tick"></span> Rees&nbsp;Performance</a>
+    <div class="nav-links">
+      <a href="/">Race</a>
+      <a href="/standings.html">Standings</a>
+      <a href="/tracks/">Tracks</a>
+      <a href="/insights/">Insights</a>
+      <a href="/about.html">About</a>
+      <a class="cta" href="https://alphonsowoodbury.com">alphonsowoodbury.com ↗</a>
+    </div>
+  </div>
+</nav>
+
+<header class="article-head wrap">
+  <p class="eyebrow">About</p>
+  <h1>A race companion, built in the open.</h1>
+  <p class="dek">
+    Rees Performance is a Formula 1 companion you open while watching — the schedule,
+    the circuit, the stakes, the standings. Built by one engineer, in public.
+  </p>
+</header>
+
+<section class="section" style="border-top:1px solid var(--line)">
+  <div class="wrap prose">
+    <p>
+      I'm <strong>Alphonso Woodbury</strong> — a senior software and data engineer. This is
+      where I point that at the sport I can't stop watching: a tool I actually use on race
+      weekends, built to be fast, clear, and genuinely useful.
+    </p>
+    <p>
+      <strong>Rees</strong> is a family name — and, as it happens, one with a little F1 in it
+      already. The site doubles as an open record of how I build: data engineering, AI, and
+      design, all in one place.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">How it's built · RPX</p>
+    <h2>Six layers, one pipeline.</h2>
+    <p class="sub">Data flows from source to screen. Each layer does one job and hands off cleanly.</p>
+
+    <div class="stack">
+      <div class="layer">
+        <div class="lname"><span class="idx">01</span> Sources</div>
+        <div class="lbody">
+          <div class="lt">Where the data comes from</div>
+          <p>Historical results, deep lap telemetry, and live session feeds — all from open F1 data.</p>
+          <div class="chips">
+            <span class="chip live">Jolpica · results</span>
+            <span class="chip">FastF1 · telemetry</span>
+            <span class="chip">OpenF1 · live</span>
+            <span class="chip">Weather</span>
+          </div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname"><span class="idx">02</span> Pipelines</div>
+        <div class="lbody">
+          <div class="lt">Ingest, validate, transform</div>
+          <p>Raw to clean to analysis-ready, in stages. Tested for freshness and integrity on every run.</p>
+          <div class="chips"><span class="chip">dlt</span><span class="chip">dbt</span><span class="chip">Dagster</span><span class="chip">bronze · silver · gold</span></div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname"><span class="idx">03</span> Storage</div>
+        <div class="lbody">
+          <div class="lt">Raw, relational, time-series, vector</div>
+          <p>Columnar parquet for scale, SQL for serving, time-series for telemetry, vectors for search.</p>
+          <div class="chips"><span class="chip">R2 · parquet</span><span class="chip">DuckDB</span><span class="chip">D1</span><span class="chip">Vectorize</span></div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname"><span class="idx">04</span> AI &amp; Analytics</div>
+        <div class="lbody">
+          <div class="lt">Predictions, queries, rules</div>
+          <p>A model for race forecasts, natural-language questions over the data, and a deterministic rules engine for answers that are exact and traceable.</p>
+          <div class="chips"><span class="chip">Predictions</span><span class="chip">RAG</span><span class="chip">Workers AI</span><span class="chip">Rules engine</span></div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname"><span class="idx">05</span> API</div>
+        <div class="lbody">
+          <div class="lt">Serve it fast, push it live</div>
+          <p>Cached JSON at the edge for everything static; WebSockets for anything that moves during a session.</p>
+          <div class="chips"><span class="chip">Workers</span><span class="chip">REST</span><span class="chip">WebSocket</span><span class="chip">Edge cache</span></div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname"><span class="idx">06</span> Interface</div>
+        <div class="lbody">
+          <div class="lt">The companion you're using</div>
+          <p>Static-fast by default, with interactivity and visualization layered in only where it earns its place.</p>
+          <div class="chips"><span class="chip live">Static HTML/CSS</span><span class="chip live">3D tracks</span><span class="chip">Astro</span><span class="chip">D3</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="band">
+      <span class="blabel">Across every layer</span>
+      <span class="chip">Observability</span><span class="chip">Data quality</span>
+      <span class="chip">Secrets</span><span class="chip">CI/CD</span><span class="chip">Infra as code</span>
+    </div>
+    <p class="note">Live today: the dataset, this companion, and the 3D Track Explorer. The rest is the build plan — shipped in tiers.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">Sources</p>
+    <h2>Real data, all the way to live.</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Source</th><th>What it gives</th><th>Real-time</th></tr></thead>
+        <tbody>
+          <tr><td>Jolpica</td><td>Results, qualifying, schedules — 1950 to now</td><td>Post-session</td></tr>
+          <tr><td>FastF1</td><td>Lap data, car telemetry, tyres, stints</td><td>Post-session</td></tr>
+          <tr><td>OpenF1</td><td>Live telemetry, positions, intervals, weather</td><td>Yes</td></tr>
+          <tr><td>Weather</td><td>Trackside conditions and forecasts</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Historical depth is solved. Real-time is an engineering problem, not an access one.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">Real-time</p>
+    <h2>Live timing, during the race.</h2>
+    <p class="sub">A live feed fans out to every open browser through one stateful object per session. (On the roadmap.)</p>
+    <div class="flow">
+      <div class="step"><div class="sn">Source</div><div class="st">OpenF1 live</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Ingest</div><div class="st">Worker</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Buffer</div><div class="st">Queue</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">State</div><div class="st">Durable Object</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Push</div><div class="st">WebSocket</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Screen</div><div class="st">Browser</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">Scope</p>
+    <h2>Built in tiers.</h2>
+    <p class="sub">Each tier ships on its own and stands up the next.</p>
+    <div class="flow">
+      <div class="step"><div class="sn">Tier 0 · live</div><div class="st">Companion + dataset</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Tier 1</div><div class="st">Auto-refreshing data</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Tier 2</div><div class="st">Predictions</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Tier 3</div><div class="st">Live timing</div></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="sn">Tier 4</div><div class="st">AI platform</div></div>
+    </div>
+    <p style="margin-top:2.5rem"><a class="btn" href="/">← Back to the race</a></p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="col">
+      <div class="wordmark"><span class="tick"></span> Rees&nbsp;Performance</div>
+      <p class="fine" style="margin-top:1rem">An F1 race companion by Alphonso Woodbury. A subsite of alphonsowoodbury.com.</p>
+    </div>
+    <div class="col">
+      <h4>The site</h4>
+      <a href="/">Race</a><a href="/standings.html">Standings</a>
+      <a href="/tracks/">Tracks</a><a href="/insights/">Insights</a>
+    </div>
+    <div class="col">
+      <h4>Elsewhere</h4>
+      <a href="https://alphonsowoodbury.com">Portfolio ↗</a>
+      <a href="mailto:alphonso@meristem.studio">Email ↗</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
