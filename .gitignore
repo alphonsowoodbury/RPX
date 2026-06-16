@@ -1,0 +1,23 @@
+# Private — never published
+/career-applications/
+
+# Regenerable data artifacts / caches
+/data/raw/
+/data/f1.sqlite
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# macOS / volume system files
+.DS_Store
+.AppleDouble
+.Spotlight-V100/
+.Trashes/
+.fseventsd/
+*.swp
