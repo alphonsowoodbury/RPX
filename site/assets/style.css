@@ -139,6 +139,15 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-meta b { color: var(--text); font-weight: 500; }
 
+/* ---------- countdown ---------- */
+.cdwrap .lab { font-family: var(--mono); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.cd { display: flex; gap: 1.5rem; margin-top: 1rem; font-family: var(--mono); }
+.cd .u { text-align: left; }
+.cd .u b { display: block; font-size: clamp(1.8rem, 6vw, 3rem); font-weight: 700; line-height: 1; color: var(--text); letter-spacing: -.02em; }
+.cd .u span { font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
+tr.next td { color: var(--text); }
+tr.next td:first-child::before { content: "▸ "; color: var(--text); }
+
 /* ---------- buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; gap: .6rem;

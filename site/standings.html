@@ -2,106 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Standings — Rees Performance</title>
-<meta name="description" content="Live Formula 1 drivers' and constructors' championship standings." />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://api.jolpi.ca" crossorigin>
-<link rel="stylesheet" href="/assets/style.css" />
-<script src="/assets/theme.js"></script>
+<meta http-equiv="refresh" content="0; url=/season.html" />
+<link rel="canonical" href="/season.html" />
+<title>Moved → 2026 Season</title>
 </head>
 <body>
-
-<nav class="nav">
-  <div class="wrap">
-    <a class="wordmark" href="/"><span class="tick"></span> Rees&nbsp;Performance</a>
-    <div class="nav-links">
-      <a href="/">Race</a>
-      <a href="/standings.html">Standings</a>
-      <a href="/tracks/">Tracks</a>
-      <a href="/insights/">Insights</a>
-      <a href="/about.html">About</a>
-      <a class="cta" href="https://alphonsowoodbury.com">alphonsowoodbury.com ↗</a>
-    </div>
-  </div>
-</nav>
-
-<header class="article-head wrap">
-  <p class="eyebrow">Championship · <span id="season">2026</span></p>
-  <h1>Standings.</h1>
-  <p class="dek">Where the title fight stands. Updated after every session.</p>
-</header>
-
-<section class="section" style="border-top:1px solid var(--line)">
-  <div class="wrap">
-    <p class="eyebrow">Drivers</p>
-    <h2>Drivers' championship</h2>
-    <div class="table-scroll" style="margin-top:1.5rem">
-      <table>
-        <thead><tr><th class="rank">#</th><th>Driver</th><th>Constructor</th><th class="num">Wins</th><th class="num">Points</th></tr></thead>
-        <tbody id="drivers"><tr><td colspan="5">Loading…</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <p class="eyebrow">Constructors</p>
-    <h2>Constructors' championship</h2>
-    <div class="table-scroll" style="margin-top:1.5rem">
-      <table>
-        <thead><tr><th class="rank">#</th><th>Constructor</th><th class="num">Wins</th><th class="num">Points</th></tr></thead>
-        <tbody id="constructors"><tr><td colspan="4">Loading…</td></tr></tbody>
-      </table>
-    </div>
-    <p class="note">Source: Jolpica F1 (Ergast-compatible). Reflects the latest completed session.</p>
-  </div>
-</section>
-
-<footer class="footer">
-  <div class="wrap">
-    <div class="col">
-      <div class="wordmark"><span class="tick"></span> Rees&nbsp;Performance</div>
-      <p class="fine" style="margin-top:1rem">An F1 race companion by Alphonso Woodbury.</p>
-    </div>
-    <div class="col">
-      <h4>The site</h4>
-      <a href="/">Race</a><a href="/tracks/">Tracks</a>
-      <a href="/insights/">Insights</a><a href="/about.html">About</a>
-    </div>
-  </div>
-</footer>
-
-<script>
-const API = "https://api.jolpi.ca/ergast/f1";
-const $ = id => document.getElementById(id);
-const j = u => fetch(u).then(r => r.json());
-
-(async () => {
-  try{
-    const dd = await j(`${API}/current/driverStandings.json`);
-    const L = dd.MRData.StandingsTable.StandingsLists[0];
-    if(L) $("season").textContent = L.season;
-    const ds = L?.DriverStandings || [];
-    $("drivers").innerHTML = ds.map(s =>
-      `<tr><td class="rank">${s.position}</td>`+
-      `<td>${s.Driver.givenName} ${s.Driver.familyName}</td>`+
-      `<td>${s.Constructors.map(c=>c.name).join(", ")}</td>`+
-      `<td class="num">${s.wins}</td><td class="num">${s.points}</td></tr>`
-    ).join("") || `<tr><td colspan="5">No data</td></tr>`;
-  }catch(e){ $("drivers").innerHTML = `<tr><td colspan="5">Unavailable</td></tr>`; }
-
-  try{
-    const cc = await j(`${API}/current/constructorStandings.json`);
-    const cs = cc.MRData.StandingsTable.StandingsLists[0]?.ConstructorStandings || [];
-    $("constructors").innerHTML = cs.map(s =>
-      `<tr><td class="rank">${s.position}</td><td>${s.Constructor.name}</td>`+
-      `<td class="num">${s.wins}</td><td class="num">${s.points}</td></tr>`
-    ).join("") || `<tr><td colspan="4">No data</td></tr>`;
-  }catch(e){ $("constructors").innerHTML = `<tr><td colspan="4">Unavailable</td></tr>`; }
-})();
-</script>
+<p>Standings moved into the season companion. <a href="/season.html">Continue to the 2026 Season →</a></p>
 </body>
 </html>

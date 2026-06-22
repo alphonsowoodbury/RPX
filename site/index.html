@@ -3,23 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rees Performance — F1 Race Companion</title>
-<meta name="description" content="Your Formula 1 race companion — session times in your timezone, the circuit, the stakes, and the standings. By Alphonso Woodbury." />
+<title>Rees Performance — Formula 1, in the open</title>
+<meta name="description" content="A Formula 1 race companion — and, underneath, the same thing rebuilt as a data and AI platform, in public. By Alphonso Woodbury." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.jolpi.ca" crossorigin>
 <link rel="stylesheet" href="/assets/style.css" />
 <script src="/assets/theme.js"></script>
-<style>
-  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:1.25rem; margin-top:2rem; }
-  .cd{ display:flex; gap:1.5rem; margin-top:1.75rem; font-family:var(--mono); }
-  .cd .u{ text-align:left; }
-  .cd .u b{ display:block; font-size:clamp(1.8rem,6vw,3rem); font-weight:700; line-height:1; color:var(--text); letter-spacing:-.02em; }
-  .cd .u span{ font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); }
-  .cdwrap .lab{ font-family:var(--mono); font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
-  tr.next td{ color:var(--text); }
-  tr.next td:first-child::before{ content:"▸ "; color:var(--text); }
-</style>
 </head>
 <body>
 
@@ -27,73 +17,78 @@
   <div class="wrap">
     <a class="wordmark" href="/"><span class="tick"></span> Rees&nbsp;Performance</a>
     <div class="nav-links">
-      <a href="/">Race</a>
-      <a href="/standings.html">Standings</a>
-      <a href="/tracks/">Tracks</a>
+      <a href="/engineer.html">Engineer</a>
+      <a href="/scope.html">Scope</a>
+      <a href="/roadmap.html">Roadmap</a>
+      <a href="/season.html">Season</a>
       <a href="/insights/">Insights</a>
-      <a href="/about.html">About</a>
       <a class="cta" href="https://alphonsowoodbury.com">alphonsowoodbury.com ↗</a>
     </div>
   </div>
 </nav>
 
-<header class="hero wrap" style="padding-block:clamp(3rem,9vw,6rem) clamp(2rem,5vw,3rem)">
-  <p class="eyebrow" id="round">Loading race…</p>
-  <h1 style="font-size:clamp(2.2rem,7vw,4.6rem)"><span id="raceName">—</span></h1>
-  <p class="lede" id="raceLoc" style="margin-top:1rem"></p>
-  <div class="cdwrap">
-    <div class="lab" id="cdLabel">&nbsp;</div>
+<header class="hero wrap">
+  <p class="eyebrow">Rees Performance · in the open</p>
+  <h1>The race, and<br>everything under it.</h1>
+  <p class="lede">
+    A Formula 1 race companion — session times in your timezone, the circuit,
+    the championship. And underneath, the same thing rebuilt as a data and AI
+    platform, in public. Start with the next race.
+  </p>
+
+  <div class="cdwrap" style="margin-top:2.5rem">
+    <div class="lab" id="cdLabel">Next race</div>
     <div class="cd" id="cd"></div>
+    <p class="note" id="raceLine" style="margin-top:.9rem">Loading the next session…</p>
+  </div>
+
+  <div class="btn-row">
+    <a class="btn solid" href="/season.html">Open the season →</a>
+    <a class="btn" href="/scope.html">What's under the hood</a>
   </div>
 </header>
 
-<section class="section" id="sec-sessions">
-  <div class="wrap">
-    <p class="eyebrow">Sessions · your local time</p>
-    <h2>The weekend.</h2>
-    <div class="table-scroll" style="margin-top:1.5rem">
-      <table>
-        <thead><tr><th>Session</th><th>Day</th><th>Your time</th></tr></thead>
-        <tbody id="sessions"><tr><td colspan="3">Loading…</td></tr></tbody>
-      </table>
-    </div>
-    <p class="note" id="tzNote"></p>
-  </div>
-</section>
-
 <section class="section">
   <div class="wrap">
-    <div class="hub-grid">
-      <div class="card">
-        <span class="tag">The circuit</span>
-        <h3 id="circuitName">—</h3>
-        <p id="circuitStat" class="cmeta"></p>
-        <p id="circuitNote"></p>
-        <a id="circuit3d" class="btn" style="display:none;margin-top:.5rem" href="#">Explore in 3D →</a>
-      </div>
-      <div class="card">
-        <span class="tag">Drivers' championship</span>
-        <table style="margin-top:.5rem"><tbody id="drivers"><tr><td>Loading…</td></tr></tbody></table>
-        <a class="status" href="/standings.html" style="margin-top:.5rem">Full standings →</a>
-      </div>
-      <div class="card">
-        <span class="tag">Constructors'</span>
-        <table style="margin-top:.5rem"><tbody id="constructors"><tr><td>Loading…</td></tr></tbody></table>
-        <a class="status" href="/standings.html" style="margin-top:.5rem">Full standings →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="sec-last">
-  <div class="wrap">
-    <p class="eyebrow">Last time out</p>
-    <h2 id="lastRaceName">—</h2>
-    <div class="table-scroll" style="margin-top:1.5rem">
-      <table>
-        <thead><tr><th class="rank">Pos</th><th>Driver</th><th>Constructor</th><th class="num">Pts</th></tr></thead>
-        <tbody id="lastResults"><tr><td colspan="4">Loading…</td></tr></tbody>
-      </table>
+    <p class="eyebrow">Where to go</p>
+    <h2>Pick a way in.</h2>
+    <div class="cards">
+      <a class="card" href="/season.html">
+        <span class="tag">Live companion</span>
+        <h3>2026 Season</h3>
+        <p>The next sessions in your timezone, the circuit, the standings, and the latest results.</p>
+        <span class="status live">Live now →</span>
+      </a>
+      <a class="card" href="/insights/">
+        <span class="tag">Analysis</span>
+        <h3>Insights</h3>
+        <p>Data-driven F1 writing from 77 seasons of results. Start with the Pole Position Premium.</p>
+        <span class="status">Read →</span>
+      </a>
+      <a class="card" href="/tracks/">
+        <span class="tag">3D</span>
+        <h3>Track Explorer</h3>
+        <p>Circuits rendered in three dimensions, corner by corner, in the browser.</p>
+        <span class="status">Explore →</span>
+      </a>
+      <a class="card" href="/scope.html">
+        <span class="tag">The platform</span>
+        <h3>Scope</h3>
+        <p>What this is underneath — a full data/AI platform: streaming, batch, models, evaluation. Five clouds, $0/month.</p>
+        <span class="status">See the scope →</span>
+      </a>
+      <a class="card" href="/roadmap.html">
+        <span class="tag">The build</span>
+        <h3>Roadmap</h3>
+        <p>0 → 100, every layer, built in public — from a static companion to a live streaming platform.</p>
+        <span class="status">Follow along →</span>
+      </a>
+      <a class="card" href="/engineer.html">
+        <span class="tag">Who's behind it</span>
+        <h3>The engineer</h3>
+        <p>Alphonso Woodbury — a data and AI platform engineer, building this end to end and in the open.</p>
+        <span class="status">More →</span>
+      </a>
     </div>
   </div>
 </section>
@@ -102,14 +97,20 @@
   <div class="wrap">
     <div class="col">
       <div class="wordmark"><span class="tick"></span> Rees&nbsp;Performance</div>
-      <p class="fine" style="margin-top:1rem">An F1 race companion by Alphonso Woodbury. Data updates after each session.</p>
+      <p class="fine" style="margin-top:1rem">A Formula 1 race companion, and a data platform built in the open. By Alphonso Woodbury — a subsite of alphonsowoodbury.com.</p>
     </div>
     <div class="col">
       <h4>The site</h4>
-      <a href="/standings.html">Standings</a>
+      <a href="/season.html">2026 Season</a>
       <a href="/tracks/">Track Explorer</a>
       <a href="/insights/">Insights</a>
       <a href="/about.html">About &amp; how it's built</a>
+    </div>
+    <div class="col">
+      <h4>The build</h4>
+      <a href="/scope.html">Scope</a>
+      <a href="/roadmap.html">Roadmap</a>
+      <a href="/engineer.html">The engineer</a>
     </div>
     <div class="col">
       <h4>Elsewhere</h4>
@@ -129,44 +130,29 @@ const SESSION_NAMES = {
   SprintQualifying:"Sprint Quali", Sprint:"Sprint", Qualifying:"Qualifying",
 };
 const dtOf = s => (s && s.date) ? new Date(`${s.date}T${s.time || "00:00:00Z"}`) : null;
-const fmtDay  = d => d.toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"});
-const fmtTime = d => d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
 
 let countdownTarget = null, countdownTimer = null;
 
-async function loadRace(){
-  const data = await j(`${API}/current/next.json`);
-  const races = data.MRData.RaceTable.Races;
-  if(!races.length){ $("round").textContent = "Season complete — see you next year"; return; }
-  const r = races[0];
+async function loadCountdown(){
+  try{
+    const data = await j(`${API}/current/next.json`);
+    const races = data.MRData.RaceTable.Races;
+    if(!races.length){ $("cdLabel").textContent = "Season complete"; $("raceLine").textContent = "See you next year."; return; }
+    const r = races[0];
 
-  $("round").textContent = `Round ${r.round} · ${r.season} season`;
-  $("raceName").textContent = r.raceName;
-  $("raceLoc").textContent = `${r.Circuit.circuitName} · ${r.Circuit.Location.locality}, ${r.Circuit.Location.country}`;
+    const list = [];
+    for(const k of Object.keys(SESSION_NAMES)) if(r[k]) list.push({name:SESSION_NAMES[k], dt:dtOf(r[k])});
+    list.push({name:"Race", dt:dtOf({date:r.date, time:r.time})});
+    list.sort((a,b)=> a.dt - b.dt);
 
-  // assemble sessions (incl. the race itself), sorted chronologically
-  const list = [];
-  for(const k of Object.keys(SESSION_NAMES)) if(r[k]) list.push({name:SESSION_NAMES[k], dt:dtOf(r[k])});
-  list.push({name:"Race", dt:dtOf({date:r.date, time:r.time})});
-  list.sort((a,b)=> a.dt - b.dt);
+    const now = new Date();
+    const next = list.find(s => s.dt > now);
+    const target = next ? next.dt : list[list.length-1].dt;
 
-  const now = new Date();
-  const next = list.find(s => s.dt > now);
-  const tb = $("sessions"); tb.innerHTML = "";
-  for(const s of list){
-    const tr = document.createElement("tr");
-    if(next && s.name===next.name && +s.dt===+next.dt) tr.className = "next";
-    tr.innerHTML = `<td>${s.name}</td><td>${fmtDay(s.dt)}</td><td>${fmtTime(s.dt)}</td>`;
-    tb.appendChild(tr);
-  }
-  $("tzNote").textContent = `Times shown in your timezone (${Intl.DateTimeFormat().resolvedOptions().timeZone}). Updated after each session.`;
-
-  // countdown to next session (or to the race)
-  const target = next ? next.dt : list[list.length-1].dt;
-  $("cdLabel").textContent = next ? `Next: ${next.name}` : "Race weekend complete";
-  startCountdown(target);
-
-  loadCircuit(r.Circuit.circuitId);
+    $("cdLabel").textContent = next ? `Next: ${r.raceName} · ${next.name}` : "Race weekend";
+    $("raceLine").textContent = `${r.Circuit.circuitName} · ${r.Circuit.Location.locality}, ${r.Circuit.Location.country} — round ${r.round}, ${r.season}.`;
+    startCountdown(target);
+  }catch(e){ $("cdLabel").textContent = "Next race"; $("raceLine").textContent = "Live timing unavailable right now."; }
 }
 
 function startCountdown(target){
@@ -187,55 +173,7 @@ function startCountdown(target){
   tick(); countdownTimer = setInterval(tick, 1000);
 }
 
-async function loadCircuit(circuitId){
-  try{
-    const stats = await j("/data/circuit_stats.json");
-    const c = stats[circuitId];
-    if(!c) return;
-    $("circuitName").textContent = c.name;
-    const pct = c.poleWinRate!=null ? `${(c.poleWinRate*100).toFixed(1)}%` : "—";
-    $("circuitStat").innerHTML = `<b>${pct}</b> of races here won from pole · ${c.races} GPs since ${c.firstSeason}`;
-    $("circuitNote").textContent = c.poleWinRate==null ? ""
-      : c.poleWinRate >= 0.55 ? "Track position is king here — qualifying is decisive."
-      : c.poleWinRate <= 0.42 ? "An overtaking track — Sunday is genuinely up for grabs."
-      : "Balanced — pole helps, but the race is live.";
-    if(c.track3d){
-      const a = $("circuit3d");
-      a.href = `/tracks/?c=${c.track3d}`; a.style.display = "inline-flex";
-    }
-  }catch(e){ /* stats optional */ }
-}
-
-async function loadStandings(){
-  try{
-    const dd = await j(`${API}/current/driverStandings.json`);
-    const ds = dd.MRData.StandingsTable.StandingsLists[0]?.DriverStandings || [];
-    $("drivers").innerHTML = ds.slice(0,5).map(s =>
-      `<tr><td class="rank">${s.position}</td><td>${s.Driver.givenName[0]}. ${s.Driver.familyName}</td><td class="num">${s.points}</td></tr>`
-    ).join("") || `<tr><td>—</td></tr>`;
-  }catch(e){ $("drivers").innerHTML = `<tr><td>Unavailable</td></tr>`; }
-  try{
-    const cc = await j(`${API}/current/constructorStandings.json`);
-    const cs = cc.MRData.StandingsTable.StandingsLists[0]?.ConstructorStandings || [];
-    $("constructors").innerHTML = cs.slice(0,5).map(s =>
-      `<tr><td class="rank">${s.position}</td><td>${s.Constructor.name}</td><td class="num">${s.points}</td></tr>`
-    ).join("") || `<tr><td>—</td></tr>`;
-  }catch(e){ $("constructors").innerHTML = `<tr><td>Unavailable</td></tr>`; }
-}
-
-async function loadLast(){
-  try{
-    const data = await j(`${API}/current/last/results.json`);
-    const r = data.MRData.RaceTable.Races[0];
-    if(!r){ $("lastRaceName").textContent = "—"; return; }
-    $("lastRaceName").textContent = r.raceName;
-    $("lastResults").innerHTML = r.Results.slice(0,10).map(x =>
-      `<tr><td class="rank">${x.positionText}</td><td>${x.Driver.givenName} ${x.Driver.familyName}</td><td>${x.Constructor.name}</td><td class="num">${x.points}</td></tr>`
-    ).join("");
-  }catch(e){ $("lastResults").innerHTML = `<tr><td colspan="4">Unavailable</td></tr>`; }
-}
-
-loadRace(); loadStandings(); loadLast();
+loadCountdown();
 </script>
 </body>
 </html>
