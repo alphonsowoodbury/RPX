@@ -1,5 +1,7 @@
 # Private — never published
 /career-applications/
+/TODO.md
+/_holding/
 
 # Regenerable data artifacts / caches
 /data/raw/
@@ -13,6 +15,10 @@ venv/
 
 # Node
 node_modules/
+
+# Editor / tooling caches
+.idea/
+.wrangler/
 
 # macOS / volume system files
 .DS_Store
