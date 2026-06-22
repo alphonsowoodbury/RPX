@@ -8,22 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/assets/style.css" />
+<script src="/assets/theme.js"></script>
 <style>
-  /* Light-mode override — engineer page only. Mirrors scope/roadmap. */
-  :root {
-    --bg:        #ffffff;
-    --bg-elev:   #f6f6f7;
-    --bg-card:   #fafafa;
-    --line:      #e4e4e7;
-    --line-soft: #efeff1;
-    --text:      #18181b;
-    --muted:     #52525b;
-    --dim:       #71717a;
-    --faint:     #b4b4ba;
-  }
-  .nav { background: rgba(255,255,255,.82); }
-  .prose p { color: #3f3f46; }
-  .lead p { max-width: 70ch; margin-top: 1.3rem; font-size: clamp(1.15rem, 2.6vw, 1.45rem); line-height: 1.5; color: #2a2a2e; }
+  .lead p { max-width: 70ch; margin-top: 1.3rem; font-size: clamp(1.15rem, 2.6vw, 1.45rem); line-height: 1.5; color: var(--lead); }
   .lead p:first-child { margin-top: 0; }
   .lead strong { color: var(--text); font-weight: 600; }
 </style>

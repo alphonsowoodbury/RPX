@@ -7,6 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 :root {
+  color-scheme: dark;
   --bg:        #0a0a0b;
   --bg-elev:   #121214;
   --bg-card:   #161618;
@@ -16,6 +17,9 @@
   --muted:     #a1a1aa;
   --dim:       #6b6b73;
   --faint:     #3f3f46;
+  --nav-bg:    rgba(10,10,11,.78);
+  --prose:     #d4d4d8;
+  --lead:      #c9c9ce;
 
   --display: 'Space Grotesk', system-ui, sans-serif;
   --body:    'Inter', system-ui, sans-serif;
@@ -24,6 +28,27 @@
   --maxw: 1080px;
   --pad:  clamp(1.25rem, 5vw, 3rem);
 }
+
+/* Light theme — the same monochrome scale, inverted. Applied via data-theme
+   on <html> (see assets/theme.js); the toggle persists the choice. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:        #ffffff;
+  --bg-elev:   #f6f6f7;
+  --bg-card:   #fafafa;
+  --line:      #e4e4e7;
+  --line-soft: #efeff1;
+  --text:      #18181b;
+  --muted:     #52525b;
+  --dim:       #71717a;
+  --faint:     #b4b4ba;
+  --nav-bg:    rgba(255,255,255,.82);
+  --prose:     #3f3f46;
+  --lead:      #2a2a2e;
+}
+
+/* Theme-driven properties transition; layout does not. */
+body, .nav { transition: background-color .25s ease, color .25s ease, border-color .25s ease; }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -58,7 +83,7 @@ a { color: inherit; text-decoration: none; }
 /* ---------- nav ---------- */
 .nav {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(10,10,11,.78);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
@@ -79,6 +104,20 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-links a:hover { color: var(--text); }
 @media (max-width: 620px){ .nav-links a:not(.cta){ display:none; } }
+
+/* ---------- theme toggle ---------- */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  background: transparent; border: 1px solid var(--line); color: var(--muted);
+  cursor: pointer; transition: color .15s, border-color .15s;
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--faint); }
+.theme-toggle svg { width: 15px; height: 15px; display: block; }
+.theme-toggle .i-sun  { display: none; }
+.theme-toggle .i-moon { display: block; }
+:root[data-theme="light"] .theme-toggle .i-sun  { display: block; }
+:root[data-theme="light"] .theme-toggle .i-moon { display: none; }
 
 /* ---------- hero ---------- */
 .hero { padding-block: clamp(4rem, 14vw, 9rem) clamp(3rem, 8vw, 6rem); }
@@ -126,7 +165,7 @@ a { color: inherit; text-decoration: none; }
 .section h2 + .sub { margin-top: 1rem; max-width: 60ch; color: var(--muted); }
 
 /* ---------- prose ---------- */
-.prose p { max-width: 68ch; margin-top: 1.2rem; color: #d4d4d8; }
+.prose p { max-width: 68ch; margin-top: 1.2rem; color: var(--prose); }
 .prose p:first-child { margin-top: 0; }
 .prose strong { color: var(--text); font-weight: 600; }
 
