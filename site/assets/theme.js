@@ -1,4 +1,4 @@
-/* Rees Performance — theme controller.
+/* RPX — theme controller.
    Monochrome dark/light. Loaded synchronously in <head> so the stored theme is
    applied before first paint (no flash). The site defaults to light; an explicit
    choice (the nav toggle) is remembered in localStorage and wins thereafter. */
