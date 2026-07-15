@@ -3,13 +3,12 @@
 **Project:** Rees Performance — RPX F1 platform (foundation dataset)
 **Built:** 2026-06-15
 **Source:** [Jolpica F1 API](https://api.jolpi.ca/) (Ergast-compatible successor)
-**Scope:** Every F1 World Championship Grand Prix, 1950 → present (77 seasons, 1,156 races)
+**Scope:** Every F1 World Championship Grand Prix, 1950 → the generated 2026 snapshot (77 seasons, 1,156 races)
 
 ## Files
 - `grands_prix.csv` — one row per Grand Prix (the analysis table)
-- `f1.sqlite` — same data, table `grands_prix` (queryable with SQL)
 - `build_grands_prix.py` — reproducible builder (caches raw JSON in `raw/`)
-- `raw/` — cached API responses (winners, grid-P1, qualifying-P1)
+- `raw/` — local cached API responses when the builder is run; not committed
 
 ## Columns
 | column | meaning |
@@ -28,7 +27,7 @@
 - **Pole before 2003** is derived from *grid position 1* (actual starting front-row),
   which is the pole sitter except in rare grid-penalty cases. True qualifying
   classification is only fully available from 2003 onward (`poleSource` flags which).
-- 2026 season is in progress; data reflects races run as of build date.
+- 2026 season is in progress; the committed artifact reflects its generation date and must not be treated as a final season total.
 - Includes the Indianapolis 500 (part of the championship 1950–1960).
 
 ## Headline stat
