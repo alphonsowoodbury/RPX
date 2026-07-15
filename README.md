@@ -2,102 +2,89 @@
 
 # RPX — Formula 1 Race Companion
 
-**A fast, race-day Formula 1 companion — and an open portfolio of the engineering behind it.**
+**Race-weekend context built on reproducible Formula 1 data.**
 
 [![Live](https://img.shields.io/badge/live-f1.alphonsowoodbury.com-111?style=flat-square)](https://f1.alphonsowoodbury.com)
+[![Validation](https://img.shields.io/github/actions/workflow/status/alphonsowoodbury/RPX/validate.yml?style=flat-square&label=data)](https://github.com/alphonsowoodbury/RPX/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111?style=flat-square)](LICENSE)
-[![Data](https://img.shields.io/badge/data-1950–2026-111?style=flat-square)](data/)
 
 </div>
 
----
+RPX is a deployed Formula 1 companion by Alphonso Woodbury. It combines current race-weekend information from the Jolpica API with a reproducible historical dataset, original analysis, and browser-based 3D circuit geometry.
 
-**RPX** (Rees Performance) is a Formula 1 project by **Alphonso Woodbury**: a product
-you open *while watching a Grand Prix*, built on a reproducible data platform spanning
-every World Championship race since 1950. It's where an F1 obsession meets software,
-data, AI, and design — and the whole thing is built in the open.
+## What is shipped
 
-> The deployed site is the centerpiece, but this repository is the portfolio: the data
-> pipeline, the analysis, the 3D work, and the architecture that ties it together.
-
-## Highlights
-
-- **🏁 Race Hub** — the next Grand Prix with a live countdown, the full session schedule
-  auto-converted to your timezone, the circuit and its pole→win history, championship
-  snapshots, and last-race results. Live from the [Jolpica F1 API](https://github.com/jolpica/jolpica-f1).
-- **📊 70+ years of data** — every Grand Prix from 1950–2026 (**1,156 races**, 77 seasons)
-  in one clean, reproducible dataset of winners and pole positions.
-- **🌐 3D Track Explorer** — six circuits rendered from real geometry with Three.js
-  (orbit, zoom, switch). Built from open WGS84 circuit data projected to local meters.
-- **🔎 Insights** — data-driven analysis, starting with *The Pole Position Premium*
-  (pole converts to a win 43.5% of the time — but that's nearly doubled since the 1980s).
-- **🎨 Monochrome design system** — custom, dependency-free CSS; a telemetry-inspired aesthetic.
-
-## Tech
-
-| Layer | Stack |
+| Capability | Evidence |
 |---|---|
-| Frontend | Static HTML / CSS / vanilla JS · zero build step · Three.js (3D) via CDN |
-| Data | Python (pandas) pipelines over the Jolpica F1 API + open circuit geometry |
-| Live data | Fetched client-side from the Jolpica API (results, schedule, standings) |
-| Target architecture | Edge-serverless (Cloudflare) with real-time live timing & an AI layer on the roadmap — see [`docs/`](docs/) |
+| Race hub | Next-race countdown, localized session schedule, standings, and recent results on the [live site](https://f1.alphonsowoodbury.com) |
+| Historical dataset | One generated row per World Championship Grand Prix from 1950 through the current 2026 season |
+| Analysis | Reproducible pole-position analysis and published methodology |
+| Track explorer | Six circuits rendered from open WGS84 geometry with Three.js |
+| Delivery | Static site deployed to Cloudflare Pages from `main` |
 
-## Repository layout
+The repository also contains planning documents and placeholder directories for possible future work. Those files are explicitly marked **planned** and are not implemented capabilities.
 
+## Current architecture
+
+| Layer | Implementation |
+|---|---|
+| Interface | Static HTML, custom CSS, and vanilla JavaScript |
+| Live context | Client-side requests to the Jolpica F1 API |
+| Historical data | Python builders over Jolpica data, with generated CSV/JSON artifacts |
+| 3D | Three.js with open circuit geometry projected to local coordinates |
+| Delivery | GitHub Actions and Cloudflare Pages |
+
+There is currently no production streaming platform, lakehouse, prediction model, LLM agent, or multi-cloud deployment.
+
+## Repository map
+
+```text
+site/       deployed companion
+data/       reproducible builders and generated datasets
+analysis/   analysis scripts and reports
+tests/      validation for committed data artifacts
+docs/       design and architecture research, not shipped functionality
 ```
-.
-├── site/                  # the deployed companion (static, no build step)
-│   ├── index.html         #   Race Hub (home)
-│   ├── standings.html     #   championships
-│   ├── insights/          #   analysis articles
-│   ├── tracks/            #   3D Track Explorer (Three.js)
-│   ├── about.html         #   who + how it's built
-│   └── assets/style.css   #   monochrome design system
-├── data/                  # data pipelines
-│   ├── build_grands_prix.py    #   the 1950–2026 dataset
-│   ├── build_circuit_stats.py  #   per-circuit pole→win stats
-│   ├── build_tracks.py         #   3D circuit geometry
-│   └── grands_prix.csv         #   the dataset
-├── analysis/              # analysis scripts + generated reports
-└── docs/                  # product plan, architecture, design exploration
-```
 
-## Run it locally
+## Run locally
 
 ```bash
 git clone https://github.com/alphonsowoodbury/RPX.git
 cd RPX/site
 python3 -m http.server 8000
-# open http://localhost:8000
 ```
 
-The site is fully static and fetches live race data in the browser — no backend required.
-
-## Rebuild the data
+## Validate the committed data
 
 ```bash
-cd data
-python3 build_grands_prix.py     # every GP 1950–2026  → grands_prix.csv (+ sqlite)
-python3 build_circuit_stats.py   # per-circuit pole→win → site/data/circuit_stats.json
-python3 build_tracks.py          # 3D circuit geometry  → site/tracks/data/*.json
+python3 -m unittest discover -s tests -v
 ```
 
-## Roadmap
+## Rebuild data
 
-- **Real-time live timing** — lap-by-lap during a session (OpenF1 + WebSockets / Durable Objects)
-- **Race predictions** — a model forecasting qualifying, podium, and upsets
-- **3D telemetry** — elevation and ghost-car replays from real lap data
-- **AI layer** — natural-language queries over the data, backed by a deterministic rules engine
+The builders fetch public upstream data, so results may advance as the season progresses.
 
-## Data & credits
+```bash
+python3 data/build_grands_prix.py
+python3 data/build_circuit_stats.py
+python3 data/build_tracks.py
+```
 
-- Race results, schedules, and standings — [Jolpica F1 API](https://github.com/jolpica/jolpica-f1) (the Ergast successor)
-- Circuit geometry — the open [f1-circuits](https://github.com/bacinger/f1-circuits) dataset
+See [`data/README.md`](data/README.md) for definitions and caveats.
+
+## Near-term roadmap
+
+1. Add freshness and schema checks to every generated artifact.
+2. Expand the track explorer while documenting geometry provenance.
+3. Build one evaluated predictive question only after defining its baseline, split, and success metric.
+
+Broader architecture explorations remain research until corresponding code, tests, and operational evidence exist. See [`ROADMAP.md`](ROADMAP.md).
+
+## Data and credits
+
+- Results, schedules, and standings: [Jolpica F1](https://github.com/jolpica/jolpica-f1)
+- Circuit geometry: [f1-circuits](https://github.com/bacinger/f1-circuits)
 
 ## License
 
-[MIT](LICENSE) © 2026 Alphonso Woodbury
-
-<div align="center">
-<sub>Built by <a href="https://alphonsowoodbury.com">Alphonso Woodbury</a> · a subsite of alphonsowoodbury.com</sub>
-</div>
+[MIT](LICENSE) © 2026 Alphonso Woodbury. Upstream data and geometry remain subject to their respective source terms.

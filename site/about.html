@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>About — RPX</title>
-<meta name="description" content="A Formula 1 race companion by Alphonso Woodbury — and the whole of it: what it is, how it's built, and the plan from here. Built in the open." />
+<meta name="description" content="What RPX ships today, how its Formula 1 data is built, and what remains planned." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/assets/style.css" />
@@ -27,397 +27,49 @@
 <header class="article-head wrap">
   <p class="eyebrow">About</p>
   <h1>A race companion, built in the open.</h1>
-  <p class="dek">
-    RPX is a Formula 1 companion you open while watching — the schedule, the circuit,
-    the stakes, the standings. Underneath, it's a data and AI platform. This page is the
-    whole of it: what it is, how it's built, and the plan from here.
-  </p>
+  <p class="dek">RPX brings the schedule, circuit, standings, recent results, historical context, and original analysis into one fast race-weekend surface.</p>
 </header>
 
-<section class="section" style="border-top:1px solid var(--line)">
-  <div class="wrap prose">
-    <p>
-      I'm <strong>Alphonso Woodbury</strong> — a senior software and data engineer. This is
-      where I point that at the sport I can't stop watching: a tool I actually use on race
-      weekends, built to be fast, clear, and genuinely useful.
-    </p>
-    <p>
-      The site doubles as an open record of how I build — data engineering, AI, and
-      design, all in one place.
-    </p>
-  </div>
-</section>
-
-<!-- ══════════════ SCOPE ══════════════ -->
 <section class="section" id="scope" style="border-top:1px solid var(--line)">
   <div class="wrap prose">
-    <p class="eyebrow" style="margin-bottom:1.75rem">What it is · the thesis</p>
-    <p>
-      Most data projects stop at a dashboard. This one keeps going — all the way to a model
-      that learns from human judgment and an evaluation harness that tells you whether it
-      actually got better. That full loop, <strong>from a real-time event stream to an
-      evaluated, served model</strong>, is the shape of the work an AI lab's data org does
-      every day. RPX builds that loop end to end, at hobby scale but on the real tools.
-    </p>
-    <p>
-      Two principles hold the whole thing together. <strong>Everything is real.</strong>
-      A streaming pipeline that processes three events isn't streaming experience — so the
-      live tier runs against an actual race weekend, with the lag, backpressure, and replay
-      that come with it. And <strong>each layer earns its place.</strong> The cheap, elegant
-      version of the companion still ships and stays fast; the heavy, industry-standard
-      machinery lives behind it, where the engineering story is.
-    </p>
-  </div>
-  <div class="wrap">
-    <div class="callout">
-      <div class="big">A complete vertical slice — ingest, label, train, evaluate, serve — not another chart.</div>
-      <div class="small">F1 telemetry is a genuine high-rate stream and seventy years of structured history. The perfect domain to build the real thing on.</div>
-    </div>
+    <p class="eyebrow">What is live</p>
+    <h2>The product today.</h2>
+    <p>RPX is a static site deployed on Cloudflare Pages. Current schedules, results, and standings are fetched in the browser from Jolpica. Python builders produce the committed historical dataset and circuit statistics. Six circuits are rendered from open geometry with Three.js.</p>
+    <p>There is no production streaming pipeline, lakehouse, prediction model, AI agent, or multi-cloud platform behind the site today. Earlier architecture documents in the repository explore those possibilities; they are planning material, not shipped functionality.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="wrap">
-    <p class="eyebrow">The platform · layer by layer</p>
-    <h2>Eight layers, one loop.</h2>
-    <p class="sub">Data flows from a live timing feed to an evaluated model and back to the screen. Each layer does one job on industry-standard tools.</p>
-
+    <p class="eyebrow">Shipped architecture</p>
+    <h2>Small enough to understand.</h2>
     <div class="stack">
-      <div class="layer">
-        <div class="lname"><span class="idx">01</span> Ingestion</div>
-        <div class="lbody">
-          <div class="lt">Batch and stream, side by side</div>
-          <p>Seventy years of results and lap telemetry land in batch; live session data streams in during the race. Two paths, one platform.</p>
-          <div class="chips"><span class="chip">Apache Spark</span><span class="chip">Apache Kafka</span><span class="chip">Apache Flink</span><span class="chip">OpenF1 · live</span><span class="chip">FastF1</span></div>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="lname"><span class="idx">02</span> Lakehouse &amp; datasets</div>
-        <div class="lbody">
-          <div class="lt">Raw → clean → training-ready</div>
-          <p>Partitioned open-table-format storage, dataset versioning, dedup and quality filtering, and shards a trainer can actually load.</p>
-          <div class="chips"><span class="chip">Apache Iceberg</span><span class="chip">Parquet</span><span class="chip">BigQuery</span><span class="chip">dbt</span><span class="chip">Great Expectations</span><span class="chip">dataset versioning</span></div>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="lname"><span class="idx">03</span> Orchestration</div>
-        <div class="lbody">
-          <div class="lt">Schedules, backfills, lineage</div>
-          <p>DAGs run the pulls, the Spark jobs, the transforms, and the data-quality gates — with retries and multi-season backfills, all reproducible from code.</p>
-          <div class="chips"><span class="chip">Apache Airflow</span><span class="chip">Kubernetes</span><span class="chip">Terraform</span><span class="chip">multi-cloud</span></div>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="lname"><span class="idx">04</span> Human data</div>
-        <div class="lbody">
-          <div class="lt">F1 Judgments — collecting preference</div>
-          <p>An annotation tool where people judge pairs — which overtake was better, which strategy call smarter — producing a preference dataset, with inter-annotator agreement, quality review, and versioned guidelines.</p>
-          <div class="chips"><span class="chip">annotation UI</span><span class="chip">preference pairs</span><span class="chip">inter-annotator agreement</span><span class="chip">guideline versioning</span></div>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="lname"><span class="idx">05</span> Models · AI</div>
-        <div class="lbody">
-          <div class="lt">The full breadth — not just an LLM</div>
-          <p>Supervised ML and time-series forecasting on the marts; reinforcement learning for strategy and the RLHF reward loop; computer vision on race imagery; clustering, anomaly detection, and embeddings. An LLM is just one head, behind a provider-agnostic gateway.</p>
-          <div class="chips"><span class="chip">supervised ML</span><span class="chip">time-series forecasting</span><span class="chip">reinforcement learning</span><span class="chip">reward model · Bradley-Terry</span><span class="chip">computer vision</span><span class="chip">anomaly detection</span><span class="chip">embeddings · vector search</span></div>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="lname"><span class="idx">06</span> Evaluation</div>
-        <div class="lbody">
-          <div class="lt">Did it actually get better?</div>
-          <p>A reproducible eval harness over predictions, the reward model, and the agent — with experiment tracking and a leaderboard, so every change is measured, not asserted.</p>
-          <div class="chips"><span class="chip">eval harness</span><span class="chip">experiment tracking</span><span class="chip">leaderboard</span></div>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="lname"><span class="idx">07</span> Serving &amp; interface</div>
-        <div class="lbody">
-          <div class="lt">Fast static, live push, and an agent</div>
-          <p>A thin edge API and WebSocket stream feed a real-time dashboard, plus a natural-language agent that queries the platform through tools — with a deterministic rules engine as the source of truth.</p>
-          <div class="chips"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Cloudflare Workers</span><span class="chip">WebSocket</span><span class="chip">LLM gateway · provider-agnostic</span><span class="chip">rules engine</span></div>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="lname"><span class="idx">08</span> Safety</div>
-        <div class="lbody">
-          <div class="lt">Classify, then measure the classifier</div>
-          <p>A classifier — anomaly or content quality — shipped with a labeled evaluation set and honest precision/recall reporting, because a classifier without its eval set is a guess.</p>
-          <div class="chips"><span class="chip">classifier</span><span class="chip">labeled eval set</span><span class="chip">precision / recall</span></div>
-        </div>
-      </div>
+      <div class="layer"><div class="lname"><span class="idx">01</span> Current context</div><div class="lbody"><div class="lt">Jolpica in the browser</div><p>Race schedule, completed-session results, and championship standings are requested client-side. Error states remain visible when upstream data is unavailable.</p></div></div>
+      <div class="layer"><div class="lname"><span class="idx">02</span> Historical data</div><div class="lbody"><div class="lt">Reproducible Python builders</div><p>One table covers every World Championship Grand Prix from 1950 through the current season, including winners, starting position, circuit metadata, and pole derivation.</p></div></div>
+      <div class="layer"><div class="lname"><span class="idx">03</span> Analysis</div><div class="lbody"><div class="lt">Claims tied to source rows</div><p>The first published investigation measures how often pole position becomes a victory and explains the pre-2003 grid-position caveat.</p></div></div>
+      <div class="layer"><div class="lname"><span class="idx">04</span> Interface</div><div class="lbody"><div class="lt">Static, fast, interactive</div><p>Custom HTML/CSS/JavaScript keeps the companion light; Three.js provides the circuit explorer without requiring an application backend.</p></div></div>
     </div>
-
-    <div class="band">
-      <span class="blabel">Across every layer</span>
-      <span class="chip">Observability</span><span class="chip">Data quality</span>
-      <span class="chip">Secrets</span><span class="chip">CI/CD</span><span class="chip">Infra as code</span>
-      <span class="chip">Cost control</span><span class="chip">Open source</span>
-    </div>
-    <p class="note">A live system, run during real race weekends — so reliability is observed, not assumed.</p>
   </div>
 </section>
 
 <section class="section">
-  <div class="wrap">
-    <p class="eyebrow">Sources</p>
-    <h2>Real data, all the way to live.</h2>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>Source</th><th>What it gives</th><th>Real-time</th></tr></thead>
-        <tbody>
-          <tr><td>Jolpica</td><td>Results, qualifying, schedules — 1950 to now</td><td>Post-session</td></tr>
-          <tr><td>FastF1</td><td>Lap data, car telemetry, tyres, stints</td><td>Post-session</td></tr>
-          <tr><td>OpenF1</td><td>Live telemetry, positions, intervals, weather</td><td>Yes</td></tr>
-          <tr><td>Weather</td><td>Trackside conditions and forecasts</td><td>Yes</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">Historical depth is solved. Real-time is an engineering problem, not an access one.</p>
+  <div class="wrap prose">
+    <p class="eyebrow">Data boundaries</p>
+    <h2>What the numbers mean.</h2>
+    <p>Results and schedules come from the Jolpica F1 API. Circuit geometry comes from the open f1-circuits project. Before 2003, the historical table uses starting-grid position one as a pole proxy because complete qualifying classifications are unavailable; the dataset records that distinction.</p>
+    <p>The 2026 season is in progress. Counts and current standings reflect the most recent generated artifact or successful API response, not an immutable final season.</p>
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap">
-    <p class="eyebrow">The showpiece</p>
-    <h2>Live telemetry, processed statefully, in real time.</h2>
-    <p class="sub">During a session, the live feed becomes keyed, windowed state — gap-to-leader, sector deltas, tyre degradation, pit-window prediction — delivered exactly once.</p>
-    <div class="flow">
-      <div class="step"><div class="sn">Source</div><div class="st">OpenF1 live</div></div>
-      <div class="arr">→</div>
-      <div class="step"><div class="sn">Stream</div><div class="st">Kafka topics</div></div>
-      <div class="arr">→</div>
-      <div class="step"><div class="sn">Process</div><div class="st">Flink · stateful</div></div>
-      <div class="arr">→</div>
-      <div class="step"><div class="sn">Land</div><div class="st">BigQuery</div></div>
-      <div class="arr">→</div>
-      <div class="step"><div class="sn">Push</div><div class="st">WebSocket</div></div>
-      <div class="arr">→</div>
-      <div class="step"><div class="sn">Screen</div><div class="st">Dashboard</div></div>
-    </div>
-    <p class="note">Keyed by driver · windowed aggregations · checkpointed recovery · exactly-once delivery.</p>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <p class="eyebrow">Infrastructure</p>
-    <h2>Five clouds, free tiers, built in the open.</h2>
-    <p class="sub">The whole platform runs at a $0/month target — every always-on piece on free-forever infrastructure, with trial credits spent only on documented experiments that get torn down.</p>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>Cloud</th><th>Role</th><th>Free model</th></tr></thead>
-        <tbody>
-          <tr><td>Oracle Cloud</td><td>Always-on backbone — k3s, Kafka, Flink, Airflow</td><td>Always Free</td></tr>
-          <tr><td>Cloudflare</td><td>Edge — Pages, Workers, R2, D1</td><td>Free tier</td></tr>
-          <tr><td>Google Cloud</td><td>BigQuery warehouse · GKE experiment</td><td>Free tier + trial</td></tr>
-          <tr><td>AWS</td><td>S3, Lambda, DynamoDB</td><td>Always-free + 12-month</td></tr>
-          <tr><td>Azure</td><td>AKS, Blob storage</td><td>Trial credit</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">Self-managed vs managed Kubernetes, side by side — the same Flink tier on k3s, GKE, and AKS.</p>
-    <div class="callout">
-      <div class="big">Multi-vendor by design — a different tool per category, run far enough to compare.</div>
-      <div class="small">Redpanda vs Confluent · Airflow vs Dagster · BigQuery vs Snowflake vs DuckDB · Iceberg vs Delta. Breadth you can speak to, not buzzwords.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════ ROADMAP ══════════════ -->
 <section class="section" id="roadmap" style="border-top:1px solid var(--line)">
-  <div class="wrap">
-    <p class="eyebrow">The build · 0 → 100</p>
-    <h2>Eight phases, zero to platform.</h2>
-    <p class="sub">Cross-cutting from day one: CI/CD (GitHub Actions), secrets, infra-as-code (Terraform), and a hard $0 cost line. Each phase ships on its own and stands up the next.</p>
-
-    <div class="stack" style="margin-top:2.5rem">
-
-      <div class="layer">
-        <div class="lname"><span class="ph">00</span> Foundations</div>
-        <div class="lbody">
-          <div class="lt">The base + the free backbone</div>
-          <ul class="rmap">
-            <li class="done">Static race companion live on Cloudflare Pages</li>
-            <li class="done">Historical dataset — every Grand Prix 1950–2026</li>
-            <li class="done">3D Track Explorer · monorepo structure</li>
-            <li>Provision the free backbone: <strong>Oracle Always Free</strong> VM + <strong>k3s</strong>, GCP (<strong>BigQuery</strong>), Cloudflare, Actions secrets</li>
-            <li><strong>Terraform</strong> baseline — buckets (R2/GCS/S3), BigQuery datasets, IAM</li>
-            <li class="done">Auto-deploy the site via GitHub Actions</li>
-          </ul>
-          <span class="phase-tag live">Partly live</span>
-        </div>
-      </div>
-
-      <div class="layer">
-        <div class="lname"><span class="ph">01</span> Batch lakehouse</div>
-        <div class="lbody">
-          <div class="lt">Spark · Airflow · BigQuery · dbt</div>
-          <ul class="rmap">
-            <li><strong>Spark</strong> jobs over Jolpica + FastF1 → bronze → silver</li>
-            <li>Partitioned <strong>Iceberg/Parquet</strong> tables on R2</li>
-            <li><strong>dbt</strong> → gold marts in <strong>BigQuery</strong>, with tests + lineage</li>
-            <li><strong>Great Expectations</strong> data-quality gates</li>
-            <li><strong>Airflow</strong> DAG: pull → Spark → dbt → DQ → redeploy; backfill 77 seasons</li>
-            <li><em>Market spike:</em> Databricks Community Edition + Delta Lake</li>
-          </ul>
-          <span class="phase-tag">Next</span>
-        </div>
-      </div>
-
-      <div class="layer">
-        <div class="lname"><span class="ph">02</span> Streaming</div>
-        <div class="lbody">
-          <div class="lt">Kafka · Flink · Kubernetes — the showpiece</div>
-          <ul class="rmap">
-            <li><strong>Redpanda/Kafka</strong> on k3s; <strong>OpenF1</strong> live producer → topics</li>
-            <li><strong>Flink</strong> stateful job: gap-to-leader, sector deltas, tyre-deg, pit-window</li>
-            <li>Keyed state · windowing · checkpointing · <strong>exactly-once</strong> → BigQuery + WebSocket</li>
-            <li><strong>Run it live during a real race weekend</strong> — capture the reliability story</li>
-            <li><em>Market spike:</em> same tier on <strong>GKE</strong> → k3s vs GKE comparison</li>
-          </ul>
-          <span class="phase-tag">Planned</span>
-        </div>
-      </div>
-
-      <div class="layer">
-        <div class="lname"><span class="ph">03</span> Serving + frontend</div>
-        <div class="lbody">
-          <div class="lt">React · TypeScript · the app surface</div>
-          <ul class="rmap">
-            <li><strong>Workers</strong> API over the marts + WebSocket bridge to the live stream</li>
-            <li><strong>React + TypeScript + Vite</strong> dashboard (shadcn/ui, TanStack)</li>
-            <li>Real-time live-timing UI; deploy on Pages</li>
-          </ul>
-          <span class="phase-tag">Planned</span>
-        </div>
-      </div>
-
-      <div class="layer">
-        <div class="lname"><span class="ph">04</span> Research-data + models</div>
-        <div class="lbody">
-          <div class="lt">Human data, then the full breadth of AI</div>
-          <div class="grp">Data platform</div>
-          <ul class="rmap">
-            <li>Dataset <strong>versioning</strong> (lakeFS/DVC), dedup + quality filtering, tokenization, data loaders</li>
-            <li><strong>F1 Judgments</strong> annotation tool (preference pairs)</li>
-            <li>Preference dataset + <strong>inter-annotator agreement</strong> + quality review + versioned guidelines</li>
-          </ul>
-          <div class="grp">Models — not just LLMs</div>
-          <ul class="rmap">
-            <li><strong>Supervised ML</strong> — race/qualifying prediction, tyre-deg regression (XGBoost)</li>
-            <li><strong>Time-series forecasting</strong> — lap-time / gap evolution</li>
-            <li><strong>Reinforcement learning</strong> — pit-strategy policy + Bradley-Terry reward → RL loop</li>
-            <li><strong>Computer vision</strong> — event/overtake detection on race imagery</li>
-            <li><strong>Unsupervised</strong> clustering · <strong>anomaly detection</strong> · <strong>embeddings + vector search</strong></li>
-          </ul>
-          <span class="phase-tag">Planned</span>
-        </div>
-      </div>
-
-      <div class="layer">
-        <div class="lname"><span class="ph">05</span> Eval + observability</div>
-        <div class="lbody">
-          <div class="lt">Measure everything; watch it run</div>
-          <ul class="rmap">
-            <li><strong>Eval harness</strong> — predictions, reward model, agent on fixed tasks</li>
-            <li><strong>Experiment tracking</strong> (Weights &amp; Biases) + a leaderboard</li>
-            <li><strong>OpenTelemetry</strong> tracing + metrics across pipelines and models</li>
-            <li><strong>Grafana Cloud</strong> dashboards + data-quality and model-drift alerts</li>
-          </ul>
-          <span class="phase-tag">Planned</span>
-        </div>
-      </div>
-
-      <div class="layer">
-        <div class="lname"><span class="ph">06</span> Agent + safety</div>
-        <div class="lbody">
-          <div class="lt">Provider-agnostic agent, evaluated</div>
-          <ul class="rmap">
-            <li><strong>Agentic interface</strong> (tool use) over a <strong>provider-agnostic LLM gateway</strong> — default Claude, swappable to Gemini / open models on cost — + deterministic rules engine</li>
-            <li>Agent <strong>eval suite</strong> (scores models across providers)</li>
-            <li><strong>Safety classifier</strong> + labeled eval set + precision/recall reporting</li>
-          </ul>
-          <span class="phase-tag">Planned</span>
-        </div>
-      </div>
-
-      <div class="layer">
-        <div class="lname"><span class="ph">07</span> Proof &amp; polish</div>
-        <div class="lbody">
-          <div class="lt">The 100 — make it undeniable</div>
-          <ul class="rmap">
-            <li>Public <strong>writeups</strong> per layer ("how it's built")</li>
-            <li>One real <strong>upstream open-source PR</strong> (FastF1 / a connector / f1-circuits)</li>
-            <li>End-to-end <strong>demo</strong> + a root README that tells the whole story</li>
-            <li><strong>Cross-cloud comparison</strong> writeup — the multi-vendor market thesis, evidenced</li>
-          </ul>
-          <span class="phase-tag">Planned</span>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="band">
-      <span class="blabel">Every phase</span>
-      <span class="chip">$0 / month</span><span class="chip">Public</span>
-      <span class="chip">CI/CD</span><span class="chip">Infra as code</span><span class="chip">Observability</span>
-    </div>
+  <div class="wrap prose">
+    <p class="eyebrow">Roadmap</p>
+    <h2>Earn the next layer.</h2>
+    <p>First, validate every committed data artifact and improve freshness, provenance, and upstream-failure handling. Next, expand the useful race companion and track coverage. Only then will RPX attempt one narrow predictive question with a naive baseline, time-aware evaluation, calibration, and published failure analysis.</p>
+    <p>Streaming, lakehouse, human-data, agent, safety, and multi-cloud documents remain research unless corresponding code and evidence are shipped.</p>
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap">
-    <p class="eyebrow">Where it stands</p>
-    <h2>Honest status.</h2>
-    <p class="sub">Built means running. Everything else is the plan, in order.</p>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>Capability</th><th>Tools</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>Historical dataset · 1950–2026</td><td>Python · pandas</td><td>Live</td></tr>
-          <tr><td>Race companion + 3D Track Explorer</td><td>HTML/CSS · Three.js</td><td>Live</td></tr>
-          <tr><td>Batch lakehouse</td><td>Spark · Airflow · BigQuery · dbt</td><td>Phase 1</td></tr>
-          <tr><td>Streaming pipeline</td><td>Kafka · Flink · Kubernetes</td><td>Phase 2</td></tr>
-          <tr><td>Real-time dashboard</td><td>React · TypeScript · WebSocket</td><td>Phase 3</td></tr>
-          <tr><td>Human preference data + reward model</td><td>Annotation UI · Bradley-Terry · RL loop</td><td>Phase 4</td></tr>
-          <tr><td>Models — ML · RL · CV · forecasting</td><td>XGBoost · PyTorch · RL · OpenCV · embeddings</td><td>Phase 4</td></tr>
-          <tr><td>Eval harness + observability</td><td>Eval suite · experiment tracking</td><td>Phase 5</td></tr>
-          <tr><td>Agentic interface + safety classifier</td><td>LLM gateway (provider-agnostic) · rules engine · classifier</td><td>Phase 6</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">A skill you can demo beats a skill you can name. This tracks the difference.</p>
-    <p style="margin-top:2.5rem"><a class="btn" href="/">← Back to the race</a></p>
-  </div>
-</section>
-
-<footer class="footer">
-  <div class="wrap">
-    <div class="col">
-      <div class="wordmark"><span class="tick"></span> RPX</div>
-      <p class="fine" style="margin-top:1rem">An F1 race companion by Alphonso Woodbury. A subsite of alphonsowoodbury.com.</p>
-    </div>
-    <div class="col">
-      <h4>The site</h4>
-      <a href="/season.html">2026 Season</a>
-      <a href="/tracks/">Track Explorer</a>
-      <a href="/insights/">Insights</a>
-      <a href="/about.html">About</a>
-    </div>
-    <div class="col">
-      <h4>The build</h4>
-      <a href="/about.html#scope">Scope</a>
-      <a href="/about.html#roadmap">Roadmap</a>
-    </div>
-    <div class="col">
-      <h4>Elsewhere</h4>
-      <a href="https://alphonsowoodbury.com">Portfolio ↗</a>
-      <a href="mailto:alphonso@meristem.studio">Email ↗</a>
-    </div>
-  </div>
-</footer>
-
+<footer class="footer"><div class="wrap"><div class="col"><div class="wordmark"><span class="tick"></span> RPX</div><p class="fine" style="margin-top:1rem">Built by Alphonso Woodbury.</p></div><div class="col"><h4>Explore</h4><a href="/season.html">Season</a><a href="/tracks/">Tracks</a><a href="/insights/">Insights</a></div><div class="col"><h4>Elsewhere</h4><a href="https://github.com/alphonsowoodbury/RPX">GitHub ↗</a><a href="https://alphonsowoodbury.com">Portfolio ↗</a></div></div></footer>
 </body>
 </html>
